@@ -27,24 +27,24 @@ To run the app follow next steps:
  
  ## REST
  
- 1. GET /node/14     -   get node by with id = 4 
+ 1. `GET /node/14`     -   get node by with `id = 4` 
  
- 2. GET /node/14/descendants - get all descendants with node id = 14, you may use `page=X&size=Y&sort=Z` parameters for this endpoint
+ 2. `GET /node/14/descendants` - get all descendants with node `id = 14`, you may use `page=X&size=Y&sort=Z` parameters for this endpoint
  
- 3. GET /node/14/ancestors - get all ancestors with node id = 14, you may use `page=X&size=Y&sort=Z` parameters for this endpoint
+ 3. `GET /node/14/ancestors` - get all ancestors with node `id = 14`, you may use `page=X&size=Y&sort=Z` parameters for this endpoint
 
- 4. POST /node       -   create new node with id = 14 and append it to parent with id = 15
+ 4. `POST /node`       -   create new node with `id = 14` and append it to parent with `id = 15`
       {
       "id":"14",
       "parentId":"15"
       }
       
- 5. PUT /node/14      -   change node with id = 14 so that it id is changed to id = 15 with all corresponding children are adjusted
+ 5. `PUT /node/14`      -   change node with id = 14 so that it id is changed to id = 15 with all corresponding children are adjusted
        {
        "id":"15"
        }
         
- 6. DELETE /node/14      -   delete node with id = 14 with all children
+ 6. `DELETE /node/14`      -   delete node with id = 14 with all children
 
 
 ## Possible issues
