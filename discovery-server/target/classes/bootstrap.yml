@@ -1,0 +1,11 @@
+spring.application.name: discovery-server
+
+server.port: 8761
+
+eureka:
+  server:
+    enable-self-preservation: false
+    a-s-g-update-interval-ms: 100
+  client:
+    fetch-registry: false
+    register-with-eureka: false

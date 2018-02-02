@@ -1,0 +1,8 @@
+com/chisw/microservices/nodes/testutil/TestUtils.class
+com/chisw/microservices/nodes/web/controller/WebNodeControllerTest.class
+com/chisw/microservices/nodes/service/NodeServiceImplIntegrationTest.class
+com/chisw/microservices/nodes/testutil/RestControllerTestHelper.class
+com/chisw/microservices/nodes/config/IntegrationTestsConfiguration.class
+com/chisw/microservices/nodes/testutil/UnitTest.class
+com/chisw/microservices/nodes/service/NodeServiceImplUnitTest.class
+com/chisw/microservices/nodes/config/PostgresSQLTestDbConfiguration.class
