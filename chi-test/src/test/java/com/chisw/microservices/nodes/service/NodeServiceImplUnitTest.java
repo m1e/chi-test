@@ -1,10 +1,13 @@
 package com.chisw.microservices.nodes.service;
 
+import com.chisw.microservices.nodes.exception.NoNodeContentException;
 import com.chisw.microservices.nodes.exception.NodeAlreadyExistsException;
 import com.chisw.microservices.nodes.exception.NodeNotFoundException;
 import com.chisw.microservices.nodes.exception.RootAlreadyExistsException;
 import com.chisw.microservices.nodes.persistence.jpa.entity.Node;
 import com.chisw.microservices.nodes.persistence.jpa.repository.NodeRepository;
+import com.chisw.microservices.nodes.service.NodeService;
+import com.chisw.microservices.nodes.service.NodeServiceImpl;
 import com.chisw.microservices.nodes.testutil.UnitTest;
 import org.junit.Before;
 import org.junit.Test;
@@ -212,13 +215,13 @@ public class NodeServiceImplUnitTest {
     }
 
     @SuppressWarnings("unchecked")
-    @Test(expected = NodeNotFoundException.class)
+    @Test
     public void deleteBranch() throws Exception {
 
         Node firstNode = node("1", "1");
         Node secondNode = node("2", "2");
 
-        when(nodeRepository.findOne(eq(firstNode.getId()))).thenReturn(null);
+        when(nodeRepository.findOne(eq(firstNode.getId()))).thenReturn(firstNode);
 
         when(nodeRepository.findAll(any(Specification.class))).thenReturn(asList(firstNode, secondNode));
 
@@ -232,7 +235,7 @@ public class NodeServiceImplUnitTest {
 
     }
 
-    @Test(expected = NodeNotFoundException.class)
+    @Test(expected = NoNodeContentException.class)
     public void deleteBranch_node_not_found() throws Exception {
 
         String id = "parentId";

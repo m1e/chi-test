@@ -1,9 +1,11 @@
 package com.chisw.microservices.nodes.config;
 
 
-import de.flapdoodle.embed.process.runtime.Network;
 import org.postgresql.ds.PGPoolingDataSource;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import ru.yandex.qatools.embed.postgresql.PostgresExecutable;
 import ru.yandex.qatools.embed.postgresql.PostgresProcess;

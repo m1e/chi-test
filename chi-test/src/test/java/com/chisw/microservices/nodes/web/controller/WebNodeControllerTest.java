@@ -1,9 +1,9 @@
 package com.chisw.microservices.nodes.web.controller;
 
+import com.chisw.microservices.nodes.exception.NoNodeContentException;
 import com.chisw.microservices.nodes.exception.NodeAlreadyExistsException;
 import com.chisw.microservices.nodes.exception.NodeNotFoundException;
 import com.chisw.microservices.nodes.exception.RootAlreadyExistsException;
-import com.chisw.microservices.nodes.persistence.jpa.entity.Node;
 import com.chisw.microservices.nodes.service.NodeService;
 import com.chisw.microservices.nodes.testutil.UnitTest;
 import org.junit.Before;
@@ -218,7 +218,7 @@ public class WebNodeControllerTest {
 
                         json("{'id':'2'}")).contentType(APPLICATION_JSON_UTF8_VALUE)
 
-                )
+        )
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8_VALUE))
@@ -241,7 +241,7 @@ public class WebNodeControllerTest {
 
                         json("{'id':'2'}")).contentType(APPLICATION_JSON_UTF8_VALUE)
 
-                 )
+        )
                 .andDo(print())
                 .andExpect(status().isNotFound());
 
@@ -269,21 +269,24 @@ public class WebNodeControllerTest {
     @Test
     public void deleteBranch_success() throws Exception {
 
-        doNothing().when(nodeService).deleteBranch(any());
+        doReturn(node("1", "1")).when(nodeService).deleteBranch(any());
 
-        mvc.perform(delete("/node/2"))
+        mvc.perform(delete("/node/1"))
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8_VALUE))
+                .andExpect(jsonPath("$.id", is("1")))
+                .andExpect(jsonPath("$.path", is("1")))
                 .andExpect(status().isOk());
 
-        verify(nodeService, times(1)).deleteBranch(eq("2"));
+        verify(nodeService, times(1)).deleteBranch(eq("1"));
     }
 
     @Test
     public void deleteBranch_not_found() throws Exception {
 
-        doThrow(new NodeNotFoundException("e")).when(nodeService).deleteBranch(any());
+        doThrow(new NoNodeContentException()).when(nodeService).deleteBranch(any());
 
         mvc.perform(delete("/node/2"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNoContent());
 
 
         verify(nodeService, times(1)).deleteBranch(eq("2"));
