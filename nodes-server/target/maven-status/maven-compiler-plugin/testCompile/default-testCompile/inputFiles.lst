@@ -1,8 +1,0 @@
-/Users/mac/WorkStuff/chi-test/nodes-server/src/test/java/com/chisw/microservices/nodes/testutil/UnitTest.java
-/Users/mac/WorkStuff/chi-test/nodes-server/src/test/java/com/chisw/microservices/nodes/service/NodeServiceImplUnitTest.java
-/Users/mac/WorkStuff/chi-test/nodes-server/src/test/java/com/chisw/microservices/nodes/service/NodeServiceImplIntegrationTest.java
-/Users/mac/WorkStuff/chi-test/nodes-server/src/test/java/com/chisw/microservices/nodes/config/PostgresSQLTestDbConfiguration.java
-/Users/mac/WorkStuff/chi-test/nodes-server/src/test/java/com/chisw/microservices/nodes/testutil/TestUtils.java
-/Users/mac/WorkStuff/chi-test/nodes-server/src/test/java/com/chisw/microservices/nodes/web/controller/WebNodeControllerTest.java
-/Users/mac/WorkStuff/chi-test/nodes-server/src/test/java/com/chisw/microservices/nodes/testutil/RestControllerTestHelper.java
-/Users/mac/WorkStuff/chi-test/nodes-server/src/test/java/com/chisw/microservices/nodes/config/IntegrationTestsConfiguration.java
