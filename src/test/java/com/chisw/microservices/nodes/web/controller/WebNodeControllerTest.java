@@ -6,6 +6,7 @@ import com.chisw.microservices.nodes.exception.NodeNotFoundException;
 import com.chisw.microservices.nodes.exception.RootAlreadyExistsException;
 import com.chisw.microservices.nodes.service.NodeService;
 import com.chisw.microservices.nodes.testutil.UnitTest;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -55,8 +56,10 @@ public class WebNodeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8_VALUE))
                 .andDo(print())
-                .andExpect(jsonPath("$.id", is("1")))
-                .andExpect(jsonPath("$.path", is("1")));
+                .andExpect(jsonPath("$.node.id", is("1")))
+                .andExpect(jsonPath("$.node.path", is("1")))
+                .andExpect(jsonPath("$.links.[0].href", Matchers.endsWith("/node/1")));
+
 
         verify(nodeService, times(1)).getById(eq("1"));
     }
@@ -89,10 +92,12 @@ public class WebNodeControllerTest {
                 .andExpect(jsonPath("$.content", hasSize(2)))
                 .andExpect(jsonPath("$.numberOfElements", is(2)))
                 .andExpect(jsonPath("$.totalElements", is(2)))
-                .andExpect(jsonPath("$.content.[0].id", is("1")))
-                .andExpect(jsonPath("$.content.[0].path", is("1")))
-                .andExpect(jsonPath("$.content.[1].id", is("2")))
-                .andExpect(jsonPath("$.content.[1].path", is("2")));
+                .andExpect(jsonPath("$.content.[0].node.id", is("1")))
+                .andExpect(jsonPath("$.content.[0].node.path", is("1")))
+                .andExpect(jsonPath("$.content.[1].node.id", is("2")))
+                .andExpect(jsonPath("$.content.[1].node.path", is("2")))
+                .andExpect(jsonPath("$.content.[0].links.[0].href", Matchers.endsWith("/node/1")))
+                .andExpect(jsonPath("$.content.[1].links.[0].href", Matchers.endsWith("/node/2")));
 
 
         verify(nodeService, times(1)).getAncestors(eq("2"), any());
@@ -126,10 +131,12 @@ public class WebNodeControllerTest {
                 .andExpect(jsonPath("$.content", hasSize(2)))
                 .andExpect(jsonPath("$.numberOfElements", is(2)))
                 .andExpect(jsonPath("$.totalElements", is(2)))
-                .andExpect(jsonPath("$.content.[0].id", is("1")))
-                .andExpect(jsonPath("$.content.[0].path", is("1")))
-                .andExpect(jsonPath("$.content.[1].id", is("2")))
-                .andExpect(jsonPath("$.content.[1].path", is("2")));
+                .andExpect(jsonPath("$.content.[0].node.id", is("1")))
+                .andExpect(jsonPath("$.content.[0].node.path", is("1")))
+                .andExpect(jsonPath("$.content.[1].node.id", is("2")))
+                .andExpect(jsonPath("$.content.[1].node.path", is("2")))
+                .andExpect(jsonPath("$.content.[0].links.[0].href", Matchers.endsWith("/node/1")))
+                .andExpect(jsonPath("$.content.[1].links.[0].href", Matchers.endsWith("/node/2")));
 
         verify(nodeService, times(1)).getDescendants(eq("2"), any());
     }
@@ -162,8 +169,9 @@ public class WebNodeControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.id", is("1")))
-                .andExpect(jsonPath("$.path", is("1")));
+                .andExpect(jsonPath("$.node.id", is("1")))
+                .andExpect(jsonPath("$.node.path", is("1")))
+                .andExpect(jsonPath("$.links.[0].href", Matchers.endsWith("/node/1")));
 
 
         verify(nodeService, times(1)).findOrCreate(eq("1"), eq("1"));
@@ -222,8 +230,10 @@ public class WebNodeControllerTest {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.id", is("2")))
-                .andExpect(jsonPath("$.path", is("1")));
+                .andExpect(jsonPath("$.node.id", is("2")))
+                .andExpect(jsonPath("$.node.path", is("1")))
+                .andExpect(jsonPath("$.links.[0].href", Matchers.endsWith("/node/2")));
+
 
 
         verify(nodeService, times(1)).update(eq("1"), eq("2"));
@@ -273,8 +283,9 @@ public class WebNodeControllerTest {
 
         mvc.perform(delete("/node/1"))
                 .andExpect(content().contentType(APPLICATION_JSON_UTF8_VALUE))
-                .andExpect(jsonPath("$.id", is("1")))
-                .andExpect(jsonPath("$.path", is("1")))
+                .andExpect(jsonPath("$.node.id", is("1")))
+                .andExpect(jsonPath("$.node.path", is("1")))
+                .andExpect(jsonPath("$.links.[0].href", Matchers.endsWith("/node/1")))
                 .andExpect(status().isOk());
 
         verify(nodeService, times(1)).deleteBranch(eq("1"));
