@@ -14,7 +14,7 @@ public interface NodeService {
 
     Node update(String id, String newId);
 
-    void deleteBranch(String parentId);
+    Node deleteBranch(String parentId);
 
     Node getById(String id);
 

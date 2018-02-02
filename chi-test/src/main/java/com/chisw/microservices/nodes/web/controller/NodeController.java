@@ -89,11 +89,11 @@ public class NodeController {
     @RequestMapping(value = "/node/{id}", method = DELETE)
     @ResponseStatus(OK)
     @ResponseBody
-    public void deleteBranch(@PathVariable("id") String id) {
+    public NodeDto deleteBranch(@PathVariable("id") String id) {
 
         logger.info(format("delete /node/%s", id));
 
-        nodeService.deleteBranch(id);
+        return toDto(nodeService.deleteBranch(id));
     }
 
 

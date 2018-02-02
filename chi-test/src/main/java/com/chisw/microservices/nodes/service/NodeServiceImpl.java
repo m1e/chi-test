@@ -1,5 +1,6 @@
 package com.chisw.microservices.nodes.service;
 
+import com.chisw.microservices.nodes.exception.NoNodeContentException;
 import com.chisw.microservices.nodes.exception.NodeAlreadyExistsException;
 import com.chisw.microservices.nodes.exception.NodeNotFoundException;
 import com.chisw.microservices.nodes.exception.RootAlreadyExistsException;
@@ -144,13 +145,15 @@ public class NodeServiceImpl implements NodeService {
 
 
     @Override
-    public void deleteBranch(String parentId) {
+    public Node deleteBranch(String parentId) {
 
         checkNotNull(parentId);
 
         logger.info(format("deleteBranch(%s))", parentId));
 
-        getIfExistsOrThrow(parentId);
+        //return 204 and not 404 when there is no node
+        Node targetNode = Optional.ofNullable(nodeRepository.findOne(parentId))
+                .orElseThrow(NoNodeContentException::new);
 
         logger.info(format("Deleting branch with parent node with id = %s", parentId));
 
@@ -163,7 +166,7 @@ public class NodeServiceImpl implements NodeService {
 
         logger.info("Branch deleted");
 
-
+        return targetNode;
     }
 
     @Override
