@@ -12,6 +12,7 @@ import java.util.logging.Logger;
  * if needed
  */
 @EnableAutoConfiguration
+//uncomment this to register the microservice to Eureka
 //@EnableDiscoveryClient
 @Import(AppConfiguration.class)
 public class NodesServer {
