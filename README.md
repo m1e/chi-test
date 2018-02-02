@@ -13,9 +13,9 @@ To run the app follow next steps:
 
  1. Open three instance of CMD windows (Windows) or Terminal (MacOS, Linux) in the source folder
  2. Build the application using `mvn clean package`
- 2. In the first window run: `java -jar /gateway-server/target/gateway-1.1.0.RELEASE.jar` and wait for it to start up
- 3. In the seconds window run: `java -jar /discovery-server/target/discovery-1.1.0.RELEASE.jar` and wait for it to start up
- 4. In the third window run: `java -jar /nodes-server/target/nodes-1.1.0.RELEASE.jar` and wait for it to start up
+ 3. In the seconds window run: `java -jar discovery-server/target/discovery-1.1.0.RELEASE.jar` and wait for it to start up
+ 4. In the first window run: `java -jar gateway-server/target/gateway-1.1.0.RELEASE.jar` and wait for it to start up
+ 5. In the third window run: `java -jar nodes-server/target/nodes-1.1.0.RELEASE.jar` and wait for it to start up
  
  Alternatively, you may start just the node service without gateway and discovery. For that you will need to comment
  `@EnableDiscoveryClient` on `com.chisw.microservices.nodes.NodesServer` and then:
