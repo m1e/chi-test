@@ -15,6 +15,6 @@ zuul:
   ignored-services: '*'
   routes:
     tree-service:
-      path: /tree/**
-      serviceId: tree-service
+      path: /node/**
+      serviceId: nodes-service
       sensitive-headers: Set-Cookie,Authorization
