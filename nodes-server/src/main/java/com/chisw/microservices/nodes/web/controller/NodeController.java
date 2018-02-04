@@ -27,6 +27,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 public class NodeController {
 
     private static final Logger LOG = LoggerFactory.getLogger(NodeController.class);
+    public static final String ID = "id";
 
     private NodeService nodeService;
 
@@ -50,12 +51,20 @@ public class NodeController {
 
     @RequestMapping(value = "/node/{id}/ancestors", method = GET)
     @ResponseBody
-    public Page<NodeResource> ancestors(@PathVariable("id") String id, Pageable pageable) {
+    public Page<NodeResource> ancestors(
+            @PathVariable("id") String id,
+            @RequestParam(value = "fields", required = false) String fields,
+            Pageable pageable) {
 
         LOG.info(format("get /node/%s/ancestors", id));
 
+        if(ID.equals(fields)) {
+            return nodeService.getAncestorsIds(id, pageable).map(NodeWebResourceUtils::toResourceWithSelfLink);
+        }
+
         return nodeService.getAncestors(id, pageable).map(NodeWebResourceUtils::toResourceWithSelfLink);
     }
+
 
     @RequestMapping(value = "/node/{id}/descendants", method = GET)
     @ResponseBody

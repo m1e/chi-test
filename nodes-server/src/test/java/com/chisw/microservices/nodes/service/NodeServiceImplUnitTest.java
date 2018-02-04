@@ -6,14 +6,14 @@ import com.chisw.microservices.nodes.exception.NodeNotFoundException;
 import com.chisw.microservices.nodes.exception.RootAlreadyExistsException;
 import com.chisw.microservices.nodes.persistence.jpa.entity.Node;
 import com.chisw.microservices.nodes.persistence.jpa.repository.NodeRepository;
-import com.chisw.microservices.nodes.service.NodeService;
-import com.chisw.microservices.nodes.service.NodeServiceImpl;
 import com.chisw.microservices.nodes.testutil.UnitTest;
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -22,6 +22,8 @@ import java.util.List;
 
 import static com.chisw.microservices.nodes.testutil.TestUtils.*;
 import static java.util.Arrays.asList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -106,6 +108,48 @@ public class NodeServiceImplUnitTest {
         nodeService.getAncestors(id, page);
 
     }
+
+    @Test
+    public void getAncestors_ids_success() throws Exception {
+
+        String id = "7";
+
+        Pageable page1 = new PageRequest(0, 2);
+        Pageable page2 = new PageRequest(1, 2);
+        Pageable page3 = new PageRequest(2, 2);
+        Pageable page4 = new PageRequest(3, 2);
+
+        Node node = node("7", "1.2.3.5.7");
+
+        when(nodeRepository.findOne(eq(id))).thenReturn(node);
+
+        Page<String> page1_ = nodeService.getAncestorsIds(id, page1);
+        Page<String> page2_ = nodeService.getAncestorsIds(id, page2);
+        Page<String> page3_ = nodeService.getAncestorsIds(id, page3);
+        Page<String> page4_ = nodeService.getAncestorsIds(id, page4);
+
+        verify(nodeRepository, times(4)).findOne(eq(id));
+
+        assertThat(page1_.getContent(), IsIterableContainingInOrder.contains("1", "2"));
+        assertThat(page2_.getContent(), IsIterableContainingInOrder.contains("3", "5"));
+        assertThat(page3_.getContent(), IsIterableContainingInOrder.contains("7"));
+        assertThat(page4_.getContent().isEmpty(), is(true));
+
+    }
+
+    @Test(expected = NodeNotFoundException.class)
+    public void getAncestors_ids_node_not_found() throws Exception {
+
+        String id = "id";
+        Pageable page = mock(Pageable.class);
+
+        when(nodeRepository.findOne(eq(id))).thenReturn(null);
+
+        nodeService.getAncestorsIds(id, page);
+
+    }
+
+
 
     @Test
     public void getDescendants() throws Exception {

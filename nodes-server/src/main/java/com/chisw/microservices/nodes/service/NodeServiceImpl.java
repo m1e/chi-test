@@ -10,18 +10,24 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-
 import static com.chisw.microservices.nodes.persistence.jpa.specification.NodeSpecifications.*;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static java.lang.Math.min;
 import static java.lang.String.format;
+import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toSet;
 
 @Service
@@ -30,6 +36,7 @@ public class NodeServiceImpl implements NodeService {
 
     private static final String DESCENDANTS_REGEX = "*.%s.*";
     private static final Logger LOG = LoggerFactory.getLogger(NodeServiceImpl.class);
+    private static final String SPLIT_ANCESTORS_REGEX = "\\.";
 
     private NodeRepository nodeRepository;
     private EntityManager entityManager;
@@ -41,11 +48,16 @@ public class NodeServiceImpl implements NodeService {
         this.entityManager = checkNotNull(entityManager);
     }
 
+    public static void main(String[] args) {
+
+        System.out.print(Arrays.toString("A.B.C".split(SPLIT_ANCESTORS_REGEX)));
+    }
 
     @Override
     public Page<Node> getAncestors(String id, Pageable page) {
 
         checkNotNull(id);
+        checkNotNull(page);
 
         getIfExistsOrThrow(id);
 
@@ -60,6 +72,8 @@ public class NodeServiceImpl implements NodeService {
 
         checkNotNull(id);
 
+        checkNotNull(pageable);
+
         getIfExistsOrThrow(id);
 
         LOG.info(format("getDescendants(%s,%s))", id, pageable));
@@ -67,6 +81,26 @@ public class NodeServiceImpl implements NodeService {
         return nodeRepository.findAll(nodeDescendants(format(DESCENDANTS_REGEX, id)), pageable);
     }
 
+    @Override
+    public Page<String> getAncestorsIds(String id, Pageable pageable) {
+
+        checkNotNull(id);
+        checkNotNull(pageable);
+
+        Node node = getIfExistsOrThrow(id);
+
+        List<String> ancestors = asList(node.getPath().split(SPLIT_ANCESTORS_REGEX));
+
+        if (pageable.getOffset() > ancestors.size()) {
+            return new PageImpl<>(emptyList());
+        }
+
+        return new PageImpl<>(ancestors.subList(
+                pageable.getOffset(),
+                min(pageable.getOffset() + pageable.getPageSize(), ancestors.size())
+        ));
+
+    }
 
     @Override
     public Node findOrCreate(String id, String parentId) {
@@ -145,7 +179,6 @@ public class NodeServiceImpl implements NodeService {
         return node;
     }
 
-
     @Override
     public Node deleteBranch(String parentId) {
 
@@ -199,7 +232,6 @@ public class NodeServiceImpl implements NodeService {
             throw new NodeAlreadyExistsException(id);
         }
     }
-
 
     private String getChildPath(String parentPath, String childId) {
 

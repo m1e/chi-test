@@ -8,6 +8,8 @@ public interface NodeService {
 
     Page<Node> getDescendants(String id, Pageable pageable);
 
+    Page<String> getAncestorsIds(String id, Pageable pageable);
+
     Page<Node> getAncestors(String id, Pageable pageable);
 
     Node findOrCreate(String id, String parentId);

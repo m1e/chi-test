@@ -104,6 +104,42 @@ public class WebNodeControllerTest {
     }
 
     @Test
+    public void ancestors_ids_success() throws Exception {
+
+        when(nodeService.getAncestorsIds(eq("2"), any())).thenReturn(new PageImpl<>(
+                        asList("1", "2")
+                )
+        );
+
+        mvc.perform(get("/node/2/ancestors?fields=id"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(APPLICATION_JSON_UTF8_VALUE))
+                .andDo(print())
+                .andExpect(jsonPath("$.content", hasSize(2)))
+                .andExpect(jsonPath("$.numberOfElements", is(2)))
+                .andExpect(jsonPath("$.totalElements", is(2)))
+                .andExpect(jsonPath("$.content.[0].node.id", is("1")))
+                .andExpect(jsonPath("$.content.[1].node.id", is("2")))
+                .andExpect(jsonPath("$.content.[0].links.[0].href", Matchers.endsWith("/node/1")))
+                .andExpect(jsonPath("$.content.[1].links.[0].href", Matchers.endsWith("/node/2")));
+
+
+        verify(nodeService, times(1)).getAncestorsIds(eq("2"), any());
+    }
+
+
+    @Test
+    public void ancestors_ids_not_found() throws Exception {
+
+        when(nodeService.getAncestorsIds(any(), any())).thenThrow(new NodeNotFoundException("e"));
+
+        mvc.perform(get("/node/2/ancestors?fields=id"))
+                .andExpect(status().isNotFound());
+
+        verify(nodeService, times(1)).getAncestorsIds(eq("2"), any());
+    }
+
+    @Test
     public void ancestors_not_found() throws Exception {
 
         when(nodeService.getAncestors(any(), any())).thenThrow(new NodeNotFoundException("e"));
@@ -233,7 +269,6 @@ public class WebNodeControllerTest {
                 .andExpect(jsonPath("$.node.id", is("2")))
                 .andExpect(jsonPath("$.node.path", is("1")))
                 .andExpect(jsonPath("$.links.[0].href", Matchers.endsWith("/node/2")));
-
 
 
         verify(nodeService, times(1)).update(eq("1"), eq("2"));

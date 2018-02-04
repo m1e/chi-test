@@ -4,7 +4,9 @@ import com.chisw.microservices.nodes.persistence.jpa.entity.Node;
 
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+
 
 /**
  * Utilities for tests.
@@ -71,8 +73,8 @@ public abstract class TestUtils {
 
     public static void assertNodeEquals(Node expected, Node actual) {
 
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getPath(), actual.getPath());
+        assertThat(expected.getId(), is(actual.getId()));
+        assertThat(expected.getPath(), is(actual.getPath()));
     }
 
     @SafeVarargs
