@@ -5,10 +5,10 @@
 	<artifactId>parent</artifactId>
 	<version>1.1.0.RELEASE</version>
 	<packaging>pom</packaging>
-	<name>nodes-parent</name>
+	<name>parent</name>
 
     	<modules>
-        	<module>gateway-server</module>
+        	<module>proxy-server</module>
         	<module>discovery-server</module>
 			<module>nodes-server</module>
     	</modules>

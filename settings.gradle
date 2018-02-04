@@ -1,0 +1,8 @@
+rootProject.name = 'parent'
+include ':proxy'
+include ':discovery'
+include ':nodes'
+
+project(':proxy').projectDir = "$rootDir/proxy-server" as File
+project(':discovery').projectDir = "$rootDir/discovery-server" as File
+project(':nodes').projectDir = "$rootDir/nodes-server" as File

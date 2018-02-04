@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.Set;
 
@@ -13,6 +14,7 @@ import java.util.Set;
 /**
  * Repository for {@link Node} data implemented using Spring Data JPA.
  */
+@Repository
 public interface NodeRepository extends CrudRepository<Node, String>, JpaSpecificationExecutor<Node> {
 
     //This query updates node id along with all children references to the node

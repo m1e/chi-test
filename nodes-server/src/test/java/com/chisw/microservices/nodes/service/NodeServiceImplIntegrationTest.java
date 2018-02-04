@@ -3,7 +3,6 @@ package com.chisw.microservices.nodes.service;
 import com.chisw.microservices.nodes.config.IntegrationTestsConfiguration;
 import com.chisw.microservices.nodes.persistence.jpa.entity.Node;
 import com.chisw.microservices.nodes.persistence.jpa.repository.NodeRepository;
-import com.chisw.microservices.nodes.service.NodeService;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,9 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static com.chisw.microservices.nodes.testutil.TestUtils.assertNodeEquals;
-import static com.chisw.microservices.nodes.testutil.TestUtils.iteratorToList;
-import static com.chisw.microservices.nodes.testutil.TestUtils.node;
+import static com.chisw.microservices.nodes.testutil.TestUtils.*;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;

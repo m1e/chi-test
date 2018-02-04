@@ -13,7 +13,6 @@
     </parent>
 
     <properties>
-        <!-- Stand-alone RESTFul application for testing only -->
         <start-class>com.chisw.microservices.nodes.discovery.DiscoveryServerApplication</start-class>
     </properties>
 

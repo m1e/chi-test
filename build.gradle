@@ -1,0 +1,51 @@
+allprojects {
+    apply plugin: 'maven'
+
+    group = 'com.chi.microservices.nodes'
+    version = '1.1.0.RELEASE'
+}
+
+buildscript {
+    ext {
+        springBootVersion = '1.4.6.RELEASE'
+    }
+
+    repositories {
+        mavenCentral()
+        maven { url "https://repo.spring.io/snapshot" }
+        maven { url "https://repo.spring.io/milestone" }
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.springframework.boot'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
+
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "http://repo.maven.apache.org/maven2" }
+    }
+
+
+    dependencies {
+        compile(group: 'org.springframework.boot', name: 'spring-boot-starter', version: springBootVersion) {
+            exclude(module: 'commons-logging')
+        }
+        compile group: 'org.springframework.boot', name: 'spring-boot-starter-thymeleaf', version: springBootVersion
+        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter', version: '1.1.9.RELEASE'
+        compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-eureka-server', version: '1.2.7.RELEASE'
+    }
+
+
+}

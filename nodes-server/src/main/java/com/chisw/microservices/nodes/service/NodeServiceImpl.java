@@ -6,6 +6,8 @@ import com.chisw.microservices.nodes.exception.NodeNotFoundException;
 import com.chisw.microservices.nodes.exception.RootAlreadyExistsException;
 import com.chisw.microservices.nodes.persistence.jpa.entity.Node;
 import com.chisw.microservices.nodes.persistence.jpa.repository.NodeRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Logger;
+
 
 import static com.chisw.microservices.nodes.persistence.jpa.specification.NodeSpecifications.*;
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -27,8 +29,8 @@ import static java.util.stream.Collectors.toSet;
 public class NodeServiceImpl implements NodeService {
 
     private static final String DESCENDANTS_REGEX = "*.%s.*";
-    private Logger logger = Logger.getLogger(NodeServiceImpl.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(NodeServiceImpl.class);
+
     private NodeRepository nodeRepository;
     private EntityManager entityManager;
 
@@ -47,7 +49,7 @@ public class NodeServiceImpl implements NodeService {
 
         getIfExistsOrThrow(id);
 
-        logger.info(format("getAncestors(%s,%s))", id, page));
+        LOG.info(format("getAncestors(%s,%s))", id, page));
 
         return nodeRepository.findAll(nodeAncestors(id), page);
 
@@ -60,7 +62,7 @@ public class NodeServiceImpl implements NodeService {
 
         getIfExistsOrThrow(id);
 
-        logger.info(format("getDescendants(%s,%s))", id, pageable));
+        LOG.info(format("getDescendants(%s,%s))", id, pageable));
 
         return nodeRepository.findAll(nodeDescendants(format(DESCENDANTS_REGEX, id)), pageable);
     }
@@ -72,19 +74,19 @@ public class NodeServiceImpl implements NodeService {
         checkNotNull(id);
         checkNotNull(parentId);
 
-        logger.info(format("findOrCreate(%s,%s))", id, parentId));
+        LOG.info(format("findOrCreate(%s,%s))", id, parentId));
 
         Node node = nodeRepository.findOne(id);
 
         if (node == null) {
 
-            logger.info(format("Creating Node(id=%s, parentId=%s)", id, parentId));
+            LOG.info(format("Creating Node(id=%s, parentId=%s)", id, parentId));
 
             String pathToNode;
 
             //trying to create a root but root exists
             if (id.equals(parentId) && rootExists()) {
-                logger.info(format("Cant't create root Node with id = %s: root already exists", parentId));
+                LOG.info(format("Cant't create root Node with id = %s: root already exists", parentId));
                 throw new RootAlreadyExistsException();
 
             }
@@ -103,11 +105,11 @@ public class NodeServiceImpl implements NodeService {
 
             nodeRepository.save(node);
 
-            logger.info(format("Node(id=%s, parentId=%s) created", id, parentId));
+            LOG.info(format("Node(id=%s, parentId=%s) created", id, parentId));
 
         } else {
 
-            logger.info(format("Node with id = %s already exists", id));
+            LOG.info(format("Node with id = %s already exists", id));
         }
 
         return node;
@@ -119,7 +121,7 @@ public class NodeServiceImpl implements NodeService {
         checkNotNull(id);
         checkNotNull(newId);
 
-        logger.info(format("update(%s,%s))", id, newId));
+        LOG.info(format("update(%s,%s))", id, newId));
 
         throwIfExists(newId);
 
@@ -128,7 +130,7 @@ public class NodeServiceImpl implements NodeService {
         String originalPath = node.getPath();
         String newPath = originalPath.replace(node.getId(), newId);
 
-        logger.info(format("Updating node with id = %s, path = %s to newId = %s, newPath = %s", id, originalPath, newId, newPath));
+        LOG.info(format("Updating node with id = %s, path = %s to newId = %s, newPath = %s", id, originalPath, newId, newPath));
 
         //detach Node as long as id is about to be changed
         entityManager.detach(node);
@@ -138,7 +140,7 @@ public class NodeServiceImpl implements NodeService {
         node.setId(newId);
         node.setPath(newPath);
 
-        logger.info("Node updated");
+        LOG.info("Node updated");
 
         return node;
     }
@@ -149,13 +151,13 @@ public class NodeServiceImpl implements NodeService {
 
         checkNotNull(parentId);
 
-        logger.info(format("deleteBranch(%s))", parentId));
+        LOG.info(format("deleteBranch(%s))", parentId));
 
         //return 204 and not 404 when there is no node
         Node targetNode = Optional.ofNullable(nodeRepository.findOne(parentId))
                 .orElseThrow(NoNodeContentException::new);
 
-        logger.info(format("Deleting branch with parent node with id = %s", parentId));
+        LOG.info(format("Deleting branch with parent node with id = %s", parentId));
 
         Set<String> descendantsIds = nodeRepository.findAll(nodeDescendants(format(DESCENDANTS_REGEX, parentId)))
                 .stream()
@@ -164,7 +166,7 @@ public class NodeServiceImpl implements NodeService {
 
         nodeRepository.deleteByNodeIds(descendantsIds);
 
-        logger.info("Branch deleted");
+        LOG.info("Branch deleted");
 
         return targetNode;
     }
@@ -174,7 +176,7 @@ public class NodeServiceImpl implements NodeService {
 
         checkNotNull(id);
 
-        logger.info(format("getById(%s))", id));
+        LOG.info(format("getById(%s))", id));
 
         return getIfExistsOrThrow(id);
     }

@@ -5,13 +5,15 @@ import com.chisw.microservices.nodes.service.NodeService;
 import com.chisw.microservices.nodes.web.dto.NodeDto;
 import com.chisw.microservices.nodes.web.dto.NodeResource;
 import com.chisw.microservices.nodes.web.util.NodeWebResourceUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.logging.Logger;
+
 
 import static com.chisw.microservices.nodes.web.util.NodeWebResourceUtils.toResourceWithSelfLink;
 import static java.lang.String.format;
@@ -24,8 +26,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
 @RestController
 public class NodeController {
 
-    private Logger logger = Logger.getLogger(NodeController.class
-            .getName());
+    private static final Logger LOG = LoggerFactory.getLogger(NodeController.class);
 
     private NodeService nodeService;
 
@@ -39,7 +40,7 @@ public class NodeController {
     @ResponseBody
     public ResponseEntity<NodeResource> node(@PathVariable("id") String id) {
 
-        logger.info(format("get /node/%s", id));
+        LOG.info(format("get /node/%s", id));
 
         Node node = nodeService.getById(id);
         ;
@@ -51,7 +52,7 @@ public class NodeController {
     @ResponseBody
     public Page<NodeResource> ancestors(@PathVariable("id") String id, Pageable pageable) {
 
-        logger.info(format("get /node/%s/ancestors", id));
+        LOG.info(format("get /node/%s/ancestors", id));
 
         return nodeService.getAncestors(id, pageable).map(NodeWebResourceUtils::toResourceWithSelfLink);
     }
@@ -60,7 +61,7 @@ public class NodeController {
     @ResponseBody
     public Page<NodeResource> descendants(@PathVariable("id") String id, Pageable pageable) {
 
-        logger.info(format("get /node/%s/descendants", id));
+        LOG.info(format("get /node/%s/descendants", id));
 
         return nodeService.getDescendants(id, pageable).map(NodeWebResourceUtils::toResourceWithSelfLink);
     }
@@ -69,7 +70,7 @@ public class NodeController {
     @ResponseBody
     public ResponseEntity<NodeResource> findOrCreate(@RequestBody NodeDto nodeDto) {
 
-        logger.info(format("post /node \n %s", nodeDto));
+        LOG.info(format("post /node \n %s", nodeDto));
 
         Node node = nodeService.findOrCreate(nodeDto.getId(), nodeDto.getParentId());
 
@@ -80,7 +81,7 @@ public class NodeController {
     @ResponseBody
     public ResponseEntity<NodeResource> update(@PathVariable String id, @RequestBody NodeDto nodeDto) {
 
-        logger.info(format("put /node/%s \n %s", id, nodeDto));
+        LOG.info(format("put /node/%s \n %s", id, nodeDto));
 
         Node node = nodeService.update(id, nodeDto.getId());
 
@@ -91,7 +92,7 @@ public class NodeController {
     @ResponseBody
     public ResponseEntity<NodeResource> deleteBranch(@PathVariable("id") String id) {
 
-        logger.info(format("delete /node/%s", id));
+        LOG.info(format("delete /node/%s", id));
 
         Node node = nodeService.deleteBranch(id);
 

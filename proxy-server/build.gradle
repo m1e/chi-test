@@ -1,0 +1,10 @@
+description = 'Proxy microservice build configuration'
+
+dependencies {
+    compile group: 'org.springframework.cloud', name: 'spring-cloud-starter-zuul', version:'1.2.7.RELEASE'
+}
+
+
+springBoot {
+    mainClass = "com.chisw.microservices.nodes.gateway.ProxyServerApplication"
+}

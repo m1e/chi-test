@@ -1,0 +1,22 @@
+description = 'Nodes microservice build configuration'
+
+
+dependencies {
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: springBootVersion
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-hateoas', version: springBootVersion
+    compile group: 'org.springframework.data', name: 'spring-data-commons', version: '1.12.10.RELEASE'
+    compile group: 'org.postgresql', name: 'postgresql', version: '9.4.1212.jre7'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-jpa', version: springBootVersion
+    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: springBootVersion) {
+        exclude(module: 'commons-logging')
+    }
+    compile group: 'com.google.guava', name: 'guava', version: '23.6-jre'
+    testCompile group: 'org.springframework.boot', name: 'spring-boot-test-autoconfigure', version: springBootVersion
+    testCompile group: 'ru.yandex.qatools.embed', name: 'postgresql-embedded', version: '2.6'
+    testCompile group: 'com.jayway.jsonpath', name: 'json-path', version: '2.2.0'
+}
+
+
+springBoot {
+    mainClass = "com.chisw.microservices.nodes.NodesServer"
+}

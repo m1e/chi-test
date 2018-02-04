@@ -1,0 +1,6 @@
+description = 'Discrovery microservice build configuration'
+
+
+springBoot {
+    mainClass = "com.chisw.microservices.nodes.discovery.DiscoveryServerApplication"
+}
