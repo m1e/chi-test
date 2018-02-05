@@ -11,13 +11,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -48,11 +46,6 @@ public class NodeServiceImpl implements NodeService {
         this.entityManager = checkNotNull(entityManager);
     }
 
-    public static void main(String[] args) {
-
-        System.out.print(Arrays.toString("A.B.C".split(SPLIT_ANCESTORS_REGEX)));
-    }
-
     @Override
     public Page<Node> getAncestors(String id, Pageable page) {
 
@@ -61,26 +54,17 @@ public class NodeServiceImpl implements NodeService {
 
         getIfExistsOrThrow(id);
 
-        LOG.info(format("getAncestors(%s,%s))", id, page));
+        LOG.info("getAncestors({},{}))", id, page);
 
         return nodeRepository.findAll(nodeAncestors(id), page);
 
     }
 
-    @Override
-    public Page<Node> getDescendants(String id, Pageable pageable) {
-
-        checkNotNull(id);
-
-        checkNotNull(pageable);
-
-        getIfExistsOrThrow(id);
-
-        LOG.info(format("getDescendants(%s,%s))", id, pageable));
-
-        return nodeRepository.findAll(nodeDescendants(format(DESCENDANTS_REGEX, id)), pageable);
-    }
-
+    /**
+     * This method is a lightweight alternative to {@link NodeServiceImpl#getAncestors}.
+     * It fetches only ancestors ids using {@link Node#path} instead of performing heavy query
+     * that fetches actual node table rows
+     */
     @Override
     public Page<String> getAncestorsIds(String id, Pageable pageable) {
 
@@ -103,24 +87,39 @@ public class NodeServiceImpl implements NodeService {
     }
 
     @Override
+    public Page<Node> getDescendants(String id, Pageable pageable) {
+
+        checkNotNull(id);
+
+        checkNotNull(pageable);
+
+        getIfExistsOrThrow(id);
+
+        LOG.info("getDescendants({},{}))", id, pageable);
+
+        return nodeRepository.findAll(nodeDescendants(format(DESCENDANTS_REGEX, id)), pageable);
+    }
+
+
+    @Override
     public Node findOrCreate(String id, String parentId) {
 
         checkNotNull(id);
         checkNotNull(parentId);
 
-        LOG.info(format("findOrCreate(%s,%s))", id, parentId));
+        LOG.info("findOrCreate({},{}))", id, parentId);
 
         Node node = nodeRepository.findOne(id);
 
         if (node == null) {
 
-            LOG.info(format("Creating Node(id=%s, parentId=%s)", id, parentId));
+            LOG.info("Creating Node(id={}, parentId={})", id, parentId);
 
             String pathToNode;
 
             //trying to create a root but root exists
             if (id.equals(parentId) && rootExists()) {
-                LOG.info(format("Cant't create root Node with id = %s: root already exists", parentId));
+                LOG.info("Cant't create root Node with id = {}: root already exists", parentId);
                 throw new RootAlreadyExistsException();
 
             }
@@ -139,11 +138,11 @@ public class NodeServiceImpl implements NodeService {
 
             nodeRepository.save(node);
 
-            LOG.info(format("Node(id=%s, parentId=%s) created", id, parentId));
+            LOG.info("Node(id={}, parentId={}) created", id, parentId);
 
         } else {
 
-            LOG.info(format("Node with id = %s already exists", id));
+            LOG.info("Node with id = {} already exists", id);
         }
 
         return node;
@@ -155,7 +154,7 @@ public class NodeServiceImpl implements NodeService {
         checkNotNull(id);
         checkNotNull(newId);
 
-        LOG.info(format("update(%s,%s))", id, newId));
+        LOG.info("update({},{}))", id, newId);
 
         throwIfExists(newId);
 
@@ -164,7 +163,7 @@ public class NodeServiceImpl implements NodeService {
         String originalPath = node.getPath();
         String newPath = originalPath.replace(node.getId(), newId);
 
-        LOG.info(format("Updating node with id = %s, path = %s to newId = %s, newPath = %s", id, originalPath, newId, newPath));
+        LOG.info("Updating node with id = {}, path = {} to newId = {}, newPath = {}", id, originalPath, newId, newPath);
 
         //detach Node as long as id is about to be changed
         entityManager.detach(node);
@@ -184,13 +183,13 @@ public class NodeServiceImpl implements NodeService {
 
         checkNotNull(parentId);
 
-        LOG.info(format("deleteBranch(%s))", parentId));
+        LOG.info("deleteBranch({}))", parentId);
 
         //return 204 and not 404 when there is no node
         Node targetNode = Optional.ofNullable(nodeRepository.findOne(parentId))
                 .orElseThrow(NoNodeContentException::new);
 
-        LOG.info(format("Deleting branch with parent node with id = %s", parentId));
+        LOG.info("Deleting branch with parent node with id = {}", parentId);
 
         Set<String> descendantsIds = nodeRepository.findAll(nodeDescendants(format(DESCENDANTS_REGEX, parentId)))
                 .stream()
@@ -209,7 +208,7 @@ public class NodeServiceImpl implements NodeService {
 
         checkNotNull(id);
 
-        LOG.info(format("getById(%s))", id));
+        LOG.info("getById({}))", id);
 
         return getIfExistsOrThrow(id);
     }

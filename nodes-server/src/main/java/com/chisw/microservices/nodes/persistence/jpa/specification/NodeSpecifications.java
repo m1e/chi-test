@@ -10,7 +10,7 @@ import javax.persistence.criteria.Subquery;
 import static com.chisw.microservices.nodes.persistence.jpa.entity.Node_.id;
 import static com.chisw.microservices.nodes.persistence.jpa.entity.Node_.path;
 import static com.chisw.microservices.nodes.persistence.jpa.utils.NodeExpressionUtils.ltreeIsDescendant;
-import static com.chisw.microservices.nodes.persistence.jpa.utils.NodeExpressionUtils.ltreeIsRoot;
+import static com.chisw.microservices.nodes.persistence.jpa.utils.NodeExpressionUtils.ltreePathIsRoot;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 
@@ -35,7 +35,7 @@ public final class NodeSpecifications {
 
     public static Specification<Node> root() {
 
-        return (root, query, cb) -> cb.isTrue(ltreeIsRoot(cb, root.get(id), path.getName()));
+        return (root, query, cb) -> cb.isTrue(ltreePathIsRoot(cb, root.get(id)));
     }
 
     public static Specification<Node> nodeAncestors(

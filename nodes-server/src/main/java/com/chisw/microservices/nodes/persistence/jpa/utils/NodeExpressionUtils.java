@@ -19,8 +19,8 @@ public final class NodeExpressionUtils {
 		return cb.function(Functions.LTREE_IS_DESCENDANT, Boolean.class, field, cb.literal(value));
 	}
 
-	public static Expression<Boolean> ltreeIsRoot(CriteriaBuilder cb, Path<String> field, String value) {
-		return cb.function(Functions.LTREE_IS_ROOT, Boolean.class, field);
+	public static Expression<Boolean> ltreePathIsRoot(CriteriaBuilder cb, Path<String> field) {
+		return cb.function(Functions.LTREE_PATH_IS_ROOT, Boolean.class, field);
 	}
 
 	public static Expression<Boolean> ltreeIsDescendant(CriteriaBuilder cb, Path<String> field, Path<String> secondField) {

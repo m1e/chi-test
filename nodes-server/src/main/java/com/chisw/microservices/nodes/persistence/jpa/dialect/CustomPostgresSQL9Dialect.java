@@ -40,7 +40,7 @@ public class CustomPostgresSQL9Dialect extends PostgreSQL9Dialect {
                 "(?1::ltxtquery @ ?2)"
         ));
 
-        registerFunction("ltree_root", new SQLFunctionTemplate(
+        registerFunction(Functions.LTREE_PATH_IS_ROOT, new SQLFunctionTemplate(
                 new BooleanType(),
                 "(?1::ltree = path)"
         ));

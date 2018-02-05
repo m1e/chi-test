@@ -14,9 +14,9 @@ public interface Functions {
 	 */
 	String LTREE_IS_ANCESTOR = "ltree_is_ancestor";
 	/**
-	 * Finds root of ltree
+	 * Finds root of ltree based on path column
 	 */
-	String LTREE_IS_ROOT = "ltree_root";
+	String LTREE_PATH_IS_ROOT = "ltree_path_is_root";
 	/**
 	 * Alternative to operation: {@code ltree ~ lquery}
 	 */
