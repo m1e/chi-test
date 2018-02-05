@@ -3,30 +3,38 @@
 To run the application you will need: 
 
 1. Java 1.8+ installed and appended to you $PATH variable
-2. Maven 3.5.0+ installed and appended to you $PATH variable
-3. PostgreSQL v9.6.6 installed, running on 5432 port with active user:('postgres', '123456').
-4. Available 2222 port for starting the web server
+2. PostgreSQL v9.6.6+ installed, running on 5432 port with active user:('postgres', '123456')
+3. Available 2222 and 2233 ports for starting the nodes server and zuul proxy 
 
-Points 3 and 4 above are not straight and can be violated in case if you edit resources/nodes-server.yml as needed
+If your PostgreSQL has different configuration or mentioned above ports are busy, please change configuration in
+`nodes-server/src/main/resources/nodes-server.yml` and `proxy-server/src/main/resources/bootstrap.yml` 
 
-To run the app follow next steps:
+## Building and running with Maven 
+
+To run the app with maven you will need Maven 3.5.0+ installed and appended to your $PATH variable
+
+To build and run the app follow the next steps:
 
  1. Open three instance of CMD windows (Windows) or Terminal (MacOS, Linux) in the source folder
  2. Build the application using `mvn clean package`
  3. In the seconds window run: `java -jar discovery-server/target/discovery-1.1.0.RELEASE.jar` and wait for it to start up
  4. In the third window run: `java -jar nodes-server/target/nodes-1.1.0.RELEASE.jar` and wait for it to start up
- 5. In the first window run: `java -jar gateway-server/target/gateway-1.1.0.RELEASE.jar` and wait for it to start up
+ 5. In the first window run: `java -jar proxy-server/target/proxy-1.1.0.RELEASE.jar` and wait for it to start up
+
+## Building and running with Gradle 
+
+To build and run the app follow the next steps:
+
+ 1. Open three instance of CMD windows (Windows) or Terminal (MacOS, Linux) in the source folder
+ 2. Build the application using `./gradlew clean build`
+ 3. In the first window run: `java -jar discovery-server/build/libs/discovery-1.1.0.RELEASE.jar` and wait for it to start up
+ 4. In the second window run: `java -jar nodes-server/target/nodes-1.1.0.RELEASE.jar` and wait for it to start up
+ 5. In the third window run: `java -jar proxy-server/build/libs/proxy-1.1.0.RELEASE.jar` and wait for it to start up
 
  
- Alternatively, you may start just the node service without gateway and discovery. For that you will need to comment
- `@EnableDiscoveryClient` on `com.chisw.microservices.nodes.NodesServer` and then:
- 
-  1. Open one instance of CMD windows (Windows) or Terminal (MacOS, Linux) in the source folder
-  2. Build the application using `mvn clean package`
-  3. In the window run: `java -jar /nodes-server/target/nodes-1.1.0.RELEASE.jar` and wait for it to start up
- 
- 
  ## REST
+ 
+ For requesting the endpoints you will need to use the following url: 'http://localhost:2233/nodes-server/`
  
  1. `GET /node/14`     -   get node by with `id = 4` 
  
